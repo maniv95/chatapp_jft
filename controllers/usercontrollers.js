@@ -1,24 +1,24 @@
 var db = require('../db');
 var bcrypt = require('bcryptjs');
 exports.register = async (req, res) => {
-    console.log("register from usercontrollers",req.body);
+    console.log("register from Backend",req.body);
     var UserName = req.body.username;
     var Name = req.body.name;
     var Email = req.body.email;
     var Password = req.body.password;
-    db.connection.query("SELECT * from users WHERE email=?", [Email], function (error, check) {
+    db.connection.query("SELECT * from user WHERE username=?",[UserName], function (error, check) {
         if (!error) {
             if (check.length > 0) {
                 res.send({
                     code: 401,
-                    error: "email already exists"
+                    error: "username already exists"
                 })
             }
             else {
                 bcrypt.genSalt(10, function (err, salt) {
                     bcrypt.hash(Password, salt, function (err, hash) {
-                        db.connection.query("INSERT INTO users (UserName,Name,Email,Password) VALUE(?,?,?,?,)",[UserName,Name, Email,hash], function (error, results) {
-                            console.log("regisering user")
+                        db.connection.query("INSERT INTO user (username,name,email,password) VALUE(?,?,?,?)",[UserName,Name,Email,hash], function (error, results) {
+                            console.log("registering user")
                             if (error) {
                                 console.log(error);
                                 res.send({
@@ -42,9 +42,9 @@ exports.register = async (req, res) => {
     });
 }
 exports.login = async (req, res) => {
-    var UserName = await req.body.UserName;
-    var Password = await req.body.Password;
-    db.connection.query('SELECT * FROM users where username=?', [UserName], function (error, results) {
+    var UserName = await req.body.username;
+    var Password = await req.body.password;
+    db.connection.query('SELECT * FROM user where username=?', [UserName], function (error, results) {
         if (!error) {
             if (results.length <= 0) {
                 res.send({

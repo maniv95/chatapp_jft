@@ -1,10 +1,10 @@
 import React,{Component} from 'react';
 import {withRouter} from 'react-router';
-class Chat extends Component{
+class ErrorPage extends Component{
     render(){
         return(
-            <h1> Welcome </h1>
+            <h1> Error </h1>
         );
     }
 }
-export default withRouter(Chat);
+export default withRouter(ErrorPage);
